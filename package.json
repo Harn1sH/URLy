@@ -1,0 +1,42 @@
+{
+  "name": "urly-service",
+  "version": "1.0.0",
+  "description": "Backend service for URLy, an URL shortener with comprehensive analytics, custom aliases, and rate limiting",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migrations:run": "typeorm migration:run -d src/data-source.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Harn1sH/URLy.git"
+  },
+  "author": "Harnish",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Harn1sH/URLy/issues"
+  },
+  "homepage": "https://github.com/Harn1sH/URLy#readme",
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.1",
+    "@types/passport": "^1.0.17",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.7",
+    "@types/passport-google-oauth20": "^2.0.16",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mysql2": "^3.12.0",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "reflect-metadata": "^0.2.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "typeorm": "^0.3.20"
+  }
+}
