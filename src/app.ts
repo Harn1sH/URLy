@@ -3,6 +3,7 @@ import { AppDataSource } from "./config/data-source";
 import swaggerUI from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import { version, description } from "../package.json";
+import authRouter from './routes/auth'
 
 const app = express();
 const swaggerOption: swaggerJsdoc.Options = {
@@ -31,3 +32,5 @@ AppDataSource.initialize()
   .catch((err) => console.log("failed to connect to database ", err));
 
 app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+
+app.use('/auth',authRouter)
