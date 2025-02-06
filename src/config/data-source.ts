@@ -1,15 +1,15 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { User } from "../entities/User";
-import "dotenv/config";
+import { envVariables } from "../utils/envVariables";
 
 export const AppDataSource = new DataSource({
   type: "mysql",
   host: "localhost",
   port: 3306,
-  username: process.env.SQL_USERNAME,
-  password: process.env.SQL_PASSWORD,
-  database: process.env.SQL_DATABASE,
+  username: envVariables.SQL_USERNAME,
+  password: envVariables.SQL_PASSWORD,
+  database: envVariables.SQL_DATABASE,
   synchronize: true,
   logging: false,
   entities: [User],
