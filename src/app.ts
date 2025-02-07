@@ -3,7 +3,7 @@ import { AppDataSource } from "./config/data-source";
 import swaggerUI from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import { version, description } from "../package.json";
-import authRouter from './routes/auth'
+import authRouter from './routes/authRouter'
 import { authMiddleware } from "./middlewares/auth";
 import cookieParser from "cookie-parser";
 import cors from "cors"
