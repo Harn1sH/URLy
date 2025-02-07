@@ -1,8 +1,6 @@
 import express from "express";
 import passport from "../utils/auth";
-import { getJWT } from "../utils/jwt";
-import { AppDataSource } from "../config/data-source";
-import { User } from "../entities/User";
+import * as authController from '../controllers/authController'
 
 const router = express.Router();
 
@@ -68,38 +66,7 @@ router.get("/google/login", passport.authenticate("google", { scope: ["profile",
 router.get(
   "/google/callback",
   passport.authenticate("google", { session: false }),
-  async (req, res) => {
-    try {
-      const userRepository = AppDataSource.getRepository(User);
-
-      const loggedInUser: any = req.user;
-
-      let user = await userRepository.findOne({ where: { googleID: loggedInUser.id } });
-
-      if (!user) {
-        user = await userRepository.create({
-          googleID: loggedInUser.id,
-          email: loggedInUser.email,
-          name: loggedInUser.name,
-        });
-      }
-      await userRepository.save(user);
-
-      const payload = {
-        id: user.googleID,
-        name: user.name,
-        email: user.email,
-      };
-
-      const token = getJWT(payload);
-
-      res
-        .cookie("token", token, { maxAge: 1000 * 60 * 60 })
-        .json({ email: user.email, name: user.name });
-    } catch (error: any) {
-      res.status(500).json({ error: error.message });
-    }
-  }
+  authController.googleCallback
 );
 
 export default router;
