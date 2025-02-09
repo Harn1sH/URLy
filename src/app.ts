@@ -3,10 +3,9 @@ import { AppDataSource } from "./config/data-source";
 import swaggerUI from "swagger-ui-express";
 import swaggerJsdoc from "swagger-jsdoc";
 import { version, description } from "../package.json";
-import authRouter from './routes/authRouter'
-import { authMiddleware } from "./middlewares/auth";
+import authRouter from "./routes/authRouter";
 import cookieParser from "cookie-parser";
-import cors from "cors"
+import cors from "cors";
 
 const app = express();
 const swaggerOption: swaggerJsdoc.Options = {
@@ -34,10 +33,10 @@ AppDataSource.initialize()
   })
   .catch((err) => console.log("failed to connect to database ", err));
 
-app.use(cors())
-app.use(cookieParser())
-app.use(express.json())
-app.use(express.urlencoded({extended: false}))
+app.use(cors());
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 app.use("/auth", authRouter);
