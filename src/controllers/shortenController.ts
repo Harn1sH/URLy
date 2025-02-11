@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { getLongUrl, shortenUrl } from "../services/urlService";
+import { nanoid } from "nanoid";
 
 export const urlShortener = async (req: Request, res: Response) => {
   try {
@@ -15,9 +16,10 @@ export const urlShortener = async (req: Request, res: Response) => {
 export const urlRedirecter = async (req: Request, res: Response) => {
   try {
     const { alias } = req.params;
+    const { uniqueUserId } = req.cookies;
 
-    const longUrl = await getLongUrl(alias);
-    res.redirect(longUrl!);
+    const longUrl = await getLongUrl(alias, req.headers["user-agent"] ?? "", !uniqueUserId);
+    res.cookie("uniqueUserId", nanoid(10)).redirect(longUrl!);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
   }
