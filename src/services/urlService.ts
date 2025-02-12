@@ -4,6 +4,7 @@ import { Url } from "../entities/url.entity";
 import { Analytics } from "../entities/analytics.entity";
 import DeviceDetector, { DetectResult } from "node-device-detector";
 import { User } from "../entities/user.entity";
+import { getCache, setCache } from "./cacheService";
 
 const urlRepository = AppDataSource.getRepository(Url);
 const userRepository = AppDataSource.getRepository(User);
@@ -114,21 +115,45 @@ export const shortenUrl = async (longUrl: string, alias: string, topic: string, 
   }
 };
 
-export const getLongUrl = async (
-  alias: string,
-  userDeviceString: string,
-  isUserUnique: boolean
-) => {
+export const getLongUrl = async (alias: string, userDeviceString: string, userID: string) => {
   const deviceDetector = new DeviceDetector();
   const device = deviceDetector.detect(userDeviceString);
 
-  const longUrl = await urlRepository.findOne({ relations: ["analytics"], where: { alias } });
+  let cachedUrl = await getCache(alias);
+  let longUrl: Url | null;
 
-  if (!longUrl) throw new Error("Invalid Url");
+  if (!cachedUrl) {
+    longUrl = await urlRepository.findOne({ relations: ["analytics"], where: { alias } });
+    if (!longUrl) throw new Error("Invalid Url");
+
+    cachedUrl = longUrl.longUrl;
+    await setCache(alias, longUrl.longUrl);
+  } else {
+    longUrl = await urlRepository.findOne({ relations: ["analytics"], where: { alias } });
+    if (!longUrl) throw new Error("Invalid Url");
+  }
+
+  let isUserUnique = true;
+  if (userID) {
+    const visitedAlias = JSON.parse(await getCache(userID));
+    isUserUnique = visitedAlias ? !(visitedAlias.find((item: string) => item === alias)) : true;
+  }
 
   let analytics = getUpdatedAnalytics(device, longUrl.analytics, isUserUnique);
   longUrl.analytics = analytics;
   await urlRepository.save(longUrl);
 
-  return longUrl?.longUrl;
+  return cachedUrl;
+};
+
+export const addUniqueUser = async (alias: string, userID: string) => {
+  const visitedAlias = JSON.parse(await getCache(userID));
+
+  if (!visitedAlias) {
+    await setCache(userID, JSON.stringify([alias]));
+  } else {
+    const set = new Set(visitedAlias);
+    set.add(alias);
+    await setCache(userID, JSON.stringify(Array.from(set)));
+  }
 };

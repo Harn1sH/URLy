@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getLongUrl, shortenUrl } from "../services/urlService";
+import { addUniqueUser, getLongUrl, shortenUrl } from "../services/urlService";
 import { nanoid } from "nanoid";
 import { User } from "../entities/user.entity";
 
@@ -18,10 +18,17 @@ export const urlShortener = async (req: Request, res: Response) => {
 export const urlRedirecter = async (req: Request, res: Response) => {
   try {
     const { alias } = req.params;
-    const { uniqueUserId } = req.cookies;
+    let { uniqueUserId } = req.cookies;
 
-    const longUrl = await getLongUrl(alias, req.headers["user-agent"] ?? "", !uniqueUserId);
-    res.cookie("uniqueUserId", nanoid(10)).redirect(longUrl!);
+    const longUrl = await getLongUrl(alias, req.headers["user-agent"] ?? "", uniqueUserId ?? "");
+
+    if (uniqueUserId) res.redirect(longUrl!);
+    else {
+      uniqueUserId = nanoid(10);
+      res.cookie("uniqueUserId", uniqueUserId).redirect(longUrl!);
+    }
+
+    await addUniqueUser(alias, uniqueUserId);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
   }

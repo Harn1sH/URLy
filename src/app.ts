@@ -9,6 +9,7 @@ import cors from "cors";
 import shortenRouter from "./routes/shortenRouter";
 import analyticsRouter from "./routes/analyticsRouter";
 import { authMiddleware } from "./middlewares/auth";
+import redisClient from "./config/redis";
 
 const app = express();
 const swaggerOption: swaggerJsdoc.Options = {
@@ -46,3 +47,7 @@ app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 app.use("/auth", authRouter);
 app.use("/api/shorten", shortenRouter);
 app.use("/api/analytics", authMiddleware, analyticsRouter);
+
+app.get('/temp', (req, res) => {
+  redisClient.connect()
+ })
