@@ -1,5 +1,6 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Analytics } from "./analytics.entity";
+import { User } from "./user.entity";
 
 @Entity()
 export class Url {
@@ -18,7 +19,10 @@ export class Url {
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;
 
-  @OneToOne(() => Analytics, { nullable: true, cascade: true, onDelete: 'SET NULL' })
+  @OneToOne(() => Analytics, { nullable: true, cascade: true, onDelete: "SET NULL" })
   @JoinColumn()
   analytics: Analytics;
+
+  @ManyToOne(() => User, (user) => user.url)
+  user: User;
 }

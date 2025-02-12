@@ -2,19 +2,19 @@ import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "ty
 import { Url } from "./url.entity";
 import { json } from "stream/consumers";
 
-type ClicksByDate = {
+export type ClicksByDate = {
   date: string;
   clickCount: number;
 };
 
-type OsType = {
+export type OsType = {
   osName: string;
   uniqueClicks: number;
   uniqueUsers: number;
 };
 
-type DeviceType = {
-  deviceType: string;
+export type DeviceType = {
+  deviceName: string;
   uniqueClicks: number;
   uniqueUsers: number;
 };
@@ -30,7 +30,7 @@ export class Analytics {
   uniqueUsers: number;
 
   @Column({ type:'json' })
-  clickByDate: ClicksByDate[];
+  clicksByDate: ClicksByDate[];
 
   @Column({ type:'json' })
   osType: OsType[];

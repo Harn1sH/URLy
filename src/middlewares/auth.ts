@@ -1,8 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import jwt, { VerifyErrors } from "jsonwebtoken";
+import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
 import { envVariables } from "../utils/envVariables";
+import { AppDataSource } from "../config/data-source";
+import { User } from "../entities/user.entity";
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+const userRepository = AppDataSource.getRepository(User);
+
+export const authMiddleware = async(req: Request, res: Response, next: NextFunction) => {
   try {
     const { token } = req.cookies;
 
@@ -10,15 +14,21 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
       res.status(403).json({ error: "Not authorized" });
     }
     else {
-      jwt.verify(token, envVariables.JWT_SECRET!, (err: VerifyErrors | null, decoded: any) => {
-        if (err) res.status(403).json({ error: "Invalid token, login again" });
+      const decodedToken = jwt.verify(token, envVariables.JWT_SECRET!) as JwtPayload;
+
+      if (!decodedToken) res.status(403).json({ error: "Invalid token, login again" });
+      else {
+        const user = await userRepository.findOne({ where: { googleID: decodedToken?.googleID } });
+        if (!user) res.status(400).json({ error: "User not found" });
         else {
-          req.user = decoded;
+          req.user = user;
           next();
         }
-      });
+      }
+
+    
     }
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
-};
+}

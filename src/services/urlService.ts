@@ -3,15 +3,17 @@ import { AppDataSource } from "../config/data-source";
 import { Url } from "../entities/url.entity";
 import { Analytics } from "../entities/analytics.entity";
 import DeviceDetector, { DetectResult } from "node-device-detector";
+import { User } from "../entities/user.entity";
 
 const urlRepository = AppDataSource.getRepository(Url);
+const userRepository = AppDataSource.getRepository(User);
 
 const generateDate = () => {
   const date = new Date();
   return date.toISOString().split("T")[0];
 };
 
-const getUpdatedAnalytics = ( 
+const getUpdatedAnalytics = (
   device: DetectResult,
   analytics: Analytics | null,
   isUserUnique: boolean
@@ -21,9 +23,9 @@ const getUpdatedAnalytics = (
 
     updatedAnalytics.totalClicks = 1;
     updatedAnalytics.uniqueUsers = 1;
-    updatedAnalytics.clickByDate = [{ date: generateDate(), clickCount: 1 }];
+    updatedAnalytics.clicksByDate = [{ date: generateDate(), clickCount: 1 }];
     updatedAnalytics.deviceType = [
-      { deviceType: device?.client?.name || "unidentified", uniqueClicks: 1, uniqueUsers: 1 },
+      { deviceName: device?.device?.type || "unidentified", uniqueClicks: 1, uniqueUsers: 1 },
     ];
     updatedAnalytics.osType = [
       { osName: device?.os?.name || "unidentified", uniqueClicks: 1, uniqueUsers: 1 },
@@ -35,15 +37,15 @@ const getUpdatedAnalytics = (
     analytics.uniqueUsers = isUserUnique ? analytics.uniqueUsers + 1 : analytics.uniqueUsers;
 
     const currentDate = generateDate();
-    const dateIndex = analytics.clickByDate.findIndex((item) => item.date === currentDate);
+    const dateIndex = analytics.clicksByDate.findIndex((item) => item.date === currentDate);
 
     if (dateIndex !== -1) {
-      analytics.clickByDate[dateIndex].clickCount += 1;
+      analytics.clicksByDate[dateIndex].clickCount += 1;
     } else {
-      if (analytics.clickByDate.length >= 7) {
-        analytics.clickByDate.pop();
+      if (analytics.clicksByDate.length >= 7) {
+        analytics.clicksByDate.splice(0, 1);
       }
-      analytics.clickByDate.push({ date: currentDate, clickCount: 1 });
+      analytics.clicksByDate.push({ date: currentDate, clickCount: 1 });
     }
 
     const osIndex = analytics.osType.findIndex(
@@ -65,7 +67,7 @@ const getUpdatedAnalytics = (
     }
 
     const deviceIndex = analytics.deviceType.findIndex(
-      (item) => item.deviceType === device?.client?.name || "unidentified"
+      (item) => item.deviceName === device?.client?.name || "unidentified"
     );
 
     if (deviceIndex !== -1) {
@@ -76,7 +78,7 @@ const getUpdatedAnalytics = (
         : analytics.deviceType[deviceIndex].uniqueUsers;
     } else {
       analytics.deviceType.push({
-        deviceType: device?.client?.name || "unidentified",
+        deviceName: device?.device?.type || "unidentified",
         uniqueClicks: 1,
         uniqueUsers: 1,
       });
@@ -86,7 +88,7 @@ const getUpdatedAnalytics = (
   }
 };
 
-export const shortenUrl = async (longUrl: string, alias: string, topic: string) => {
+export const shortenUrl = async (longUrl: string, alias: string, topic: string, user: User) => {
   if (!alias || alias.trim() === "") {
     let isInvalid = false;
     do {
@@ -96,7 +98,7 @@ export const shortenUrl = async (longUrl: string, alias: string, topic: string) 
     } while (isInvalid);
 
     const analytics = new Analytics();
-    const url = await urlRepository.create({ alias, longUrl, topic: topic ?? null });
+    const url = await urlRepository.create({ alias, longUrl, topic: topic ?? null, user });
     await urlRepository.save(url);
 
     return url;
@@ -104,7 +106,7 @@ export const shortenUrl = async (longUrl: string, alias: string, topic: string) 
     const existingUrl = await urlRepository.findOneBy({ alias });
 
     if (!existingUrl) {
-      const url = await urlRepository.create({ longUrl, alias, topic: topic ?? null });
+      const url = await urlRepository.create({ longUrl, alias, topic: topic ?? null, user: user });
       await urlRepository.save(url);
 
       return url;

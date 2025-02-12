@@ -20,8 +20,7 @@ export const googleCallback = async (req: Request, res: Response) => {
     }
 
     const payload = {
-      name: user.name,
-      email: user.email,
+      googleID: user.googleID
     };
     const token = getJWT(payload);
 

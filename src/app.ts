@@ -7,6 +7,8 @@ import authRouter from "./routes/authRouter";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import shortenRouter from "./routes/shortenRouter";
+import analyticsRouter from "./routes/analyticsRouter";
+import { authMiddleware } from "./middlewares/auth";
 
 const app = express();
 const swaggerOption: swaggerJsdoc.Options = {
@@ -40,5 +42,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+
 app.use("/auth", authRouter);
 app.use("/api/shorten", shortenRouter);
+app.use("/api/analytics", authMiddleware, analyticsRouter);
