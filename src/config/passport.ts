@@ -1,13 +1,13 @@
-import passport from 'passport'
+import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { envVariables } from './envVariables';
+import { envVariables } from "../utils/envVariables";
 
 passport.use(
   new GoogleStrategy(
     {
       clientID: envVariables.GOOGLE_CLIENT_ID!,
       clientSecret: envVariables.GOOGLE_CLIENT_SECRET!,
-      callbackURL: "/auth/google/callback", 
+      callbackURL: "/auth/google/callback",
     },
     (accessToken, refreshToken, profile, done) => {
       const user = {
