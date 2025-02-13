@@ -87,6 +87,9 @@
           },
           "400": {
             "description": "Bad request, alias is already take"
+          },
+          "429": {
+            "description": "Too many requests"
           }
         }
       }
