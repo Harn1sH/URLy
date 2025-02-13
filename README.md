@@ -1,4 +1,4 @@
-# URL Shortener Platform
+# URLy
 ## Tech stack
   - **Runtime**: Node.js
   - **Framework**: Exress.js
@@ -10,16 +10,15 @@
 URLy is a URL shortener people to create short URLs that includes advanced analytics, user authentication via Google Sign-In, and rate limiting. It supports unique features such as grouping links under specific topics and providing detailed analytics for both individual and overall URLs. 
 
 ## Features
-- **Shorten URL**: Allows users can generate shorter url for any given URL under any topics or a specified alias.
+- **Shorten URL**: Allows users to generate shorter url for any given URL under any topics or a specified alias.
 - **Analytics Tracking**: Tracks the number of clicks per link and the number of unique users.
-- **Click Tracking by Date**: Stores click counts for the last 7 days.
-- **User Uniqueness Detection**: Uses Redis to track unique visitors based on IP addresses.
-- **Authorization Support**: Uses token-based authentication for secured endpoints.
+- **Click Tracking by Date**: Stores click counts upto one week.
+- **Unique user detection**: Accurate detection of unique user.
+- **Google login**: Supports google login.
 
-## Prerequisites
-Ensure you have the following installed:
-- **Node.js** (>= 14.x)
-- **Redis Server** 
+## Dependencies
+- **Node.js** (>= 22.x.x)
+- **Redis** 
 - **MySQL** 
 - **Postman** 
 
@@ -52,14 +51,21 @@ Ensure you have the following installed:
       REDIS_PORT=
      ```
 
+    - Get google variables from configuring google API.
+
 ## Running the Project
-2. **Start the backend server**:
+1. **Start the server**:
    ```sh
     nodemon
    ```
+   For development mode, nodemon is already configured in nodemon.json, running ```nodemon``` starts and watches for changes in ./src
    The server should now be running at `http://localhost:3000` or at specified port.
 
 ## API Endpoints
+
+### 1. login
+**Endpoint:** `GET /auth/google/login`
+
 ### 1. Shorten a URL
 **Endpoint:** `POST  /api/shorten`
 
@@ -67,12 +73,12 @@ Ensure you have the following installed:
 ```json
 {
   "longUrl": "https://exampleLongURL.com",
-  "topic": "topic,
+  "topic": "topic",
   "customAlias": "alias"
 }
 ```
 
-**Response:**
+**Response Body:**
 ```json
 {
   "shortUrl": "http://url.ly/alias",
@@ -80,14 +86,14 @@ Ensure you have the following installed:
 }
 ```
 
-### 1. Redirect to Long Url
+### 2. Redirect to Long Url
 **Endpoint:** `GET /api/shorten/:customAlias`
 
 **Response:**
 302 response, redirects to the long URL
 
 
-### 2. Get analytics for specific URL
+### 3. Get analytics for specific URL
 **Endpoint:** `GET /api/analytics/:alias`
 
 **Response:**
@@ -95,30 +101,13 @@ Ensure you have the following installed:
 {
   "totalClicks": 0,
   "uniqueUsers": 0,
-  "clicksByDate": [
-    {
-      "date": "2025-02-13",
-      "clickCount": 0
-    }
-  ],
-  "osType": [
-    {
-      "osName": "string",
-      "uniqueClicks": 0,
-      "uniqueUsers": 0
-    }
-  ],
-  "deviceType": [
-    {
-      "deviceName": "string",
-      "uniqueClicks": 0,
-      "uniqueUsers": 0
-    }
-  ]
+  "clicksByDate": [],
+   "osType":[],
+  "deviceType": []
 }
 ```
 
-### 2. Get analytics for URLs of same topic
+### 4. Get analytics for URLs of same topic
 **Endpoint:** `GET /api/analytics/topic/:topic`
 
 **Response:**
@@ -126,23 +115,13 @@ Ensure you have the following installed:
 {
   "totalClicks": 0,
   "uniqueUsers": 0,
-  "clicksByDate": [
-    {
-      "date": "2025-02-13",
-      "clickCount": 0
-    }
-  ],
-  "urls": [
-    {
-      "shortUrl": "string",
-      "totalClicks": 0,
-      "uniqueUsers": 0
-    }
-  ]
+  "clicksByDate": [],
+   "osType":[],
+  "deviceType": []
 }
 ```
 
-### 2. Get analytics for all URLs
+### 5. Get analytics for all URLs
 **Endpoint:** `GET /api/analytics/overall/url`
 
 **Response:**
@@ -151,36 +130,15 @@ Ensure you have the following installed:
   "totalUrls": 0,
   "totalClicks": 0,
   "uniqueUsers": 0,
-  "clicksByDate": [
-    {
-      "date": "2025-02-03",
-      "clickCount": 0
-    }
-  ],
-  "osType": [
-    {
-      "osName": "string",
-      "uniqueClicks": 0,
-      "uniqueUsers": 0
-    }
-  ],
-  "deviceType": [
-    {
-      "deviceName": "string",
-      "uniqueClicks": 0,
-      "uniqueUsers": 0
-    }
-  ]
+ "clicksByDate": [],
+  "osType":[],
+  "deviceType": []
 }
 ```
 
-<!-- ## Challenges Faced & Solutions
-### 1. **Tracking Unique Users Without Login**
-- **Problem:** Users do not need to log in, making uniqueness tracking difficult.
-- **Solution:** Used Redis to store unique IPs and to check if a user has already visited.
-
-### 2. **Efficiently Storing Clicks for the Last 7 Days**
-- **Problem:** Old records needed to be removed, and new ones added dynamically.
-- **Solution:** Implemented an array-based approach where the oldest date is removed if the array exceeds 7 entries. -->
+### 6. Get analytics for all URLs
+**Endpoint:** `GET /api/docs`
+**Response:**
+endpoint for swagger documentaion
 
 
