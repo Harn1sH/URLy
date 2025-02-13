@@ -10,21 +10,13 @@ import shortenRouter from "./routes/shortenRouter";
 import analyticsRouter from "./routes/analyticsRouter";
 import { authMiddleware } from "./middlewares/auth";
 import redisClient from "./config/redis";
+import fs from "fs";
+import path from "path";
 
 export const app = express();
-const swaggerOption: swaggerJsdoc.Options = {
-  swaggerDefinition: {
-    openapi: "3.0.0",
-    info: {
-      title: "URLy API Documentation",
-      version,
-      description,
-    },
-  },
-  apis: ["./src/routes/*.ts"],
-};
 
-const swaggerDocs = swaggerJsdoc(swaggerOption);
+const swaggerDocument = JSON.parse(fs.readFileSync(path.resolve("./swagger.json"), "utf-8"));
+
 
 AppDataSource.initialize()
   .then(async (conn) => {
@@ -42,7 +34,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
+app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.use("/auth", authRouter);
 app.use("/api/shorten", shortenRouter);
