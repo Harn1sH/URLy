@@ -41,8 +41,6 @@ app.use("/auth", authRouter);
 app.use("/api/shorten", shortenRouter);
 app.use("/api/analytics", authMiddleware, analyticsRouter);
 
-app.get("/", (req, res) => {
-  const { token } = req.cookies;
-  if (token) res.send("You are logged in, please visit /api/docs endpoint to see the documentation").end()
-  else res.send('You are not logged in yet, please visit').redirect('/auth/google/login')
+app.get("/", authMiddleware, (req, res) => {
+  res.send("You are logged in, please visit /api/docs endpoint to see the documentation").end();
 });
