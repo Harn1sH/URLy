@@ -1,12 +1,12 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { envVariables } from "../utils/envVariables";
+import "dotenv/config";
 
 passport.use(
   new GoogleStrategy(
     {
-      clientID: envVariables.GOOGLE_CLIENT_ID!,
-      clientSecret: envVariables.GOOGLE_CLIENT_SECRET!,
+      clientID: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       callbackURL: "/auth/google/callback",
     },
     (accessToken, refreshToken, profile, done) => {

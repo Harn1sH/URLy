@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
-import { envVariables } from "../utils/envVariables";
+import "dotenv/config";
 import { AppDataSource } from "../config/data-source";
 import { User } from "../entities/user.entity";
 
@@ -14,7 +14,7 @@ export const authMiddleware = async(req: Request, res: Response, next: NextFunct
       res.status(403).json({ error: "Not authorized" });
     }
     else {
-      const decodedToken = jwt.verify(token, envVariables.JWT_SECRET!) as JwtPayload;
+      const decodedToken = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
       if (!decodedToken) res.status(403).json({ error: "Invalid token, login again" });
       else {
