@@ -86,7 +86,7 @@
             "description": "Unauthorized"
           },
           "400": {
-            "description": "Bad request"
+            "description": "Bad request, alias is already take"
           }
         }
       }

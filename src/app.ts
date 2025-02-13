@@ -12,6 +12,7 @@ import { authMiddleware } from "./middlewares/auth";
 import redisClient from "./config/redis";
 import fs from "fs";
 import path from "path";
+import "dotenv/config";
 
 export const app = express();
 
@@ -23,7 +24,7 @@ AppDataSource.initialize()
     console.log("connected to database");
 
     conn.runMigrations();
-    app.listen(3000, () => {
+    app.listen(process.env.PORT || 3000, () => {
       console.log("Server started on port 3000");
     });
   })
