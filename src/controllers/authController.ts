@@ -30,7 +30,7 @@ export const googleCallback = async (req: Request, res: Response) => {
         sameSite: "none",
         secure: true,
       })
-      .redirect("http://localhost:3000/api/docs");
+      .redirect("/api/docs");
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
