@@ -48,9 +48,10 @@ export const getTopicAnalytics = async (req: Request, res: Response) => {
 export const getTotalAnalytics = async (req: Request, res: Response) => {
   try {
     const user: User = req.user as User;
-    const analytics = await getAllAnalytics(user.googleID);
+    const { allAnalytics:analytics, totalUrls } = await getAllAnalytics(user.googleID);
 
     const response = {
+      totalUrls,
       totalClicks: analytics.totalClicks,
       uniqueUsers: analytics.uniqueUsers,
       clicksByDate: analytics.clicksByDate,

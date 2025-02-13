@@ -50,11 +50,12 @@ export const getAllAnalytics = async (googleID: string) => {
   });
 
   const url = user.map((item) => item.url).flat();
+  const totalUrls = url.length;
   const analytics = url.map((item) => item.analytics ?? { ...emptyAnalytics });
 
   const allAnalytics = getFinalAnalytics(analytics);
 
-  return allAnalytics;
+  return { allAnalytics, totalUrls };
 };
 
 const getFinalAnalytics = (analyticsList: Analytics[]) => {
