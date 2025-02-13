@@ -4,10 +4,10 @@ import { envVariables } from "../utils/envVariables";
 import { AppDataSource } from "../config/data-source";
 import { User } from "../entities/user.entity";
 
-const userRepository = AppDataSource.getRepository(User);
 
 export const authMiddleware = async(req: Request, res: Response, next: NextFunction) => {
   try {
+    const userRepository = AppDataSource.getRepository(User);
     const { token } = req.cookies;
 
     if (!token) {

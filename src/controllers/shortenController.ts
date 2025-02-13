@@ -25,7 +25,7 @@ export const urlRedirecter = async (req: Request, res: Response) => {
     if (uniqueUserId) res.redirect(longUrl!);
     else {
       uniqueUserId = nanoid(10);
-      res.cookie("uniqueUserId", uniqueUserId).redirect(longUrl!);
+      res.cookie("uniqueUserId", uniqueUserId).status(302).redirect(longUrl!);
     }
 
     await addUniqueUser(alias, uniqueUserId);

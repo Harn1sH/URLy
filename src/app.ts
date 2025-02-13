@@ -11,7 +11,7 @@ import analyticsRouter from "./routes/analyticsRouter";
 import { authMiddleware } from "./middlewares/auth";
 import redisClient from "./config/redis";
 
-const app = express();
+export const app = express();
 const swaggerOption: swaggerJsdoc.Options = {
   swaggerDefinition: {
     openapi: "3.0.0",
@@ -47,7 +47,3 @@ app.use("/api/docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 app.use("/auth", authRouter);
 app.use("/api/shorten", shortenRouter);
 app.use("/api/analytics", authMiddleware, analyticsRouter);
-
-app.get('/temp', (req, res) => {
-  redisClient.connect()
- })
