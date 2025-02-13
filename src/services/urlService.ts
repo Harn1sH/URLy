@@ -50,7 +50,7 @@ const getUpdatedAnalytics = (
     }
 
     const osIndex = analytics.osType.findIndex(
-      (item) => item.osName === device?.os?.name || "unidentified"
+      (item) => item.osName === device?.os?.name
     );
 
     if (osIndex !== -1) {
@@ -68,7 +68,7 @@ const getUpdatedAnalytics = (
     }
 
     const deviceIndex = analytics.deviceType.findIndex(
-      (item) => item.deviceName === device?.client?.name || "unidentified"
+      (item) => item.deviceName === device?.device?.type
     );
 
     if (deviceIndex !== -1) {
@@ -116,7 +116,8 @@ export const shortenUrl = async (longUrl: string, alias: string, topic: string, 
 };
 
 export const getLongUrl = async (alias: string, userDeviceString: string, userID: string) => {
-  const deviceDetector = new DeviceDetector();
+  const deviceDetector =
+    new DeviceDetector();
   const device = deviceDetector.detect(userDeviceString);
 
   let cachedUrl = await getCache(alias);
