@@ -35,7 +35,13 @@ describe("POST /api/shorten", () => {
   describe("Request is authorised", () => {
     beforeEach(() => {
       jest.clearAllMocks();
+    });
 
+    it("should return shortened URL", async () => {
+      (shortenUrl as jest.Mock).mockResolvedValue({
+        alias: "testAlias",
+        createdAt: "22-12-2002",
+      });
       (authMiddleware as jest.Mock).mockImplementation(
         (req: Request, res: Response, next: NextFunction) => {
           req.user = {
@@ -46,13 +52,6 @@ describe("POST /api/shorten", () => {
           next();
         }
       );
-    });
-
-    it("should return shortened URL", async () => {
-      (shortenUrl as jest.Mock).mockResolvedValue({
-        alias: "testAlias",
-        createdAt: "22-12-2002",
-      });
       const response = await request(app).post("/api/shorten").send({
         longUrl: "https://example.com",
         customAlias: "testAlias",

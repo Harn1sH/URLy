@@ -26,32 +26,40 @@ export const getAliasAnalytics = async (req: Request, res: Response) => {
 };
 
 export const getTopicAnalytics = async (req: Request, res: Response) => {
-  const { topic } = req.params;
-  const user = req?.user as User;
+  try {
+    const { topic } = req.params;
+    const user = req?.user as User;
 
-  const analytics = await getAnalyticsFromTopic(topic, user.googleID);
-  const response = {
-    totalClicks: analytics.totalClicks,
-    uniqueUsers: analytics.uniqueUsers,
-    clicksByDate: analytics.clicksByDate,
-    deviceType: analytics.deviceType,
-    osType: analytics.osType,
-  };
+    const analytics = await getAnalyticsFromTopic(topic, user.googleID);
+    const response = {
+      totalClicks: analytics.totalClicks,
+      uniqueUsers: analytics.uniqueUsers,
+      clicksByDate: analytics.clicksByDate,
+      deviceType: analytics.deviceType,
+      osType: analytics.osType,
+    };
 
-  res.json(response);
+    res.json(response);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 export const getTotalAnalytics = async (req: Request, res: Response) => {
-  const user: User = req.user as User;
-  const analytics = await getAllAnalytics(user.googleID);
+  try {
+    const user: User = req.user as User;
+    const analytics = await getAllAnalytics(user.googleID);
 
-  const response = {
-    totalClicks: analytics.totalClicks,
-    uniqueUsers: analytics.uniqueUsers,
-    clicksByDate: analytics.clicksByDate,
-    deviceType: analytics.deviceType,
-    osType: analytics.osType,
-  };
+    const response = {
+      totalClicks: analytics.totalClicks,
+      uniqueUsers: analytics.uniqueUsers,
+      clicksByDate: analytics.clicksByDate,
+      deviceType: analytics.deviceType,
+      osType: analytics.osType,
+    };
 
-  res.json(response);
+    res.json(response);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 };

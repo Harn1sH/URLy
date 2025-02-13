@@ -33,7 +33,7 @@ export const getAnalyticsFromTopic = async (topic: string, loggedinUserID: strin
 
   const url = user?.url;
 
-  if (!url) throw new Error("Invalid url");
+  if (!url) throw new Error("Invalid topic");
 
   const analytics = url.map((item) => item.analytics ?? ({ ...emptyAnalytics } as Analytics));
 
