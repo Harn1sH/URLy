@@ -6,6 +6,10 @@
   - **ORM**: typeORM
   - **Caching**: redis
 
+## live URL
+[URLy hotsed link](https://urly-ovr0.onrender.com/)
+
+
 ## Overview
 URLy is a URL shortener people to create short URLs that includes advanced analytics, user authentication via Google Sign-In, and rate limiting. It supports unique features such as grouping links under specific topics and providing detailed analytics for both individual and overall URLs. 
 
