@@ -18,6 +18,11 @@ services:
       - 3306
     networks:
       - urly-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   app:
     build: .
@@ -30,7 +35,8 @@ services:
     networks:
       - urly-network
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
 networks:
   urly-network:
