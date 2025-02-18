@@ -45,6 +45,7 @@ URLy is a URL shortener people to create short URLs that includes advanced analy
       SQL_USERNAME=
       SQL_PASSWORD=
       SQL_DATABASE=
+      SQL_HOST=
       GOOGLE_CALLBACK_URL=
       GOOGLE_CLIENT_ID=
       GOOGLE_CLIENT_SECRET=
@@ -62,7 +63,7 @@ URLy is a URL shortener people to create short URLs that includes advanced analy
    ```sh
     nodemon
    ```
-   For development mode, nodemon is already configured in nodemon.json, running ```nodemon``` starts and watches for changes in ./src
+   For development mode, nodemon is already configured in nodemon.json, running ```nodemon``` starts and watches for changes in ./src, configure the SQL_HOST variable inside .env appropriately according to how you are running(if using docker, set it to 'db', else set it to 'localhost')
    The server should now be running at `http://localhost:3000` or at specified port.
 
 ## API Endpoints
